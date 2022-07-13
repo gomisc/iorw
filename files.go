@@ -99,11 +99,11 @@ func ReadFileTo(filePath string, result interface{}) (err error) {
 	}
 
 	switch filepath.Ext(filePath) {
-	case "yaml", "yml":
+	case ".yaml", ".yml":
 		if err = yaml.Unmarshal(buf.Bytes(), &result); err != nil {
 			return errors.Wrapf(err, "unmarshal yaml")
 		}
-	case "json":
+	case ".json":
 		if err = json.Unmarshal(buf.Bytes(), &result); err != nil {
 			return errors.Wrapf(err, "unmarshal json")
 		}
