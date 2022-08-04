@@ -12,6 +12,8 @@ git.corout.in/golibs/filepaths v1.0.4 h1:IQnttCEZFoPiO8g4lSVm7GrLX6cco44yCdAkbO0
 git.corout.in/golibs/filepaths v1.0.4/go.mod h1:r7QpkZN0UuK1li0OXvPnwA6lCYOF7frn+CMNb33GOYQ=
 git.corout.in/golibs/filepaths v1.0.5 h1:KL6SV9R/Tw8NmjDlSvz1Yg/4Y6cdVXHQJishS90RQMI=
 git.corout.in/golibs/filepaths v1.0.5/go.mod h1:fdKf0EN4yFjINGpwrmW8058GmwGqQYZ0v5sUFmSQy1g=
+git.corout.in/golibs/filepaths v1.0.6 h1:Ef8hLiefJzFTAAV1Pa5Spykk8ORRW23w46Cmr0bh7+Y=
+git.corout.in/golibs/filepaths v1.0.6/go.mod h1:cNR+OZZJxHAUgmbjlx55KkOGrwH67LZqdWA+syUiyOs=
 git.corout.in/golibs/slog v1.0.6 h1:TErWst4Aiw04c1EFNUmzMnpWASJxfDbH1uEXAoVWH7k=
 git.corout.in/golibs/slog v1.0.6/go.mod h1:XLiu//82kRJfV3UEYm8nGqt+HxQyVAwzE17HI2ObbHU=
 git.corout.in/golibs/slog v1.0.8 h1:c/RAf/QdzurBoQJz46iWjjX9hoJmRWRRsF9eSl6jEL0=
