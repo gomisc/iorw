@@ -3,9 +3,9 @@ package iorw
 import (
 	"bytes"
 	"context"
+	"encoding/gob"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -13,6 +13,8 @@ import (
 	"git.corout.in/golibs/errors/errgroup"
 	"git.corout.in/golibs/slog"
 	"gopkg.in/yaml.v2"
+
+	"git.corout.in/golibs/filepaths"
 )
 
 // ErrUnsupportedFileFormat - не поддерживаемый формат файла
@@ -58,7 +60,7 @@ func WriteFiles(src map[string][]byte) error {
 		name, data := n, d
 
 		eg.Go(func() error {
-			if err := ioutil.WriteFile(name, data, os.ModePerm); err != nil {
+			if err := os.WriteFile(name, data, os.ModePerm); err != nil {
 				return errors.Wrapf(err, "write file %s", name)
 			}
 
@@ -69,8 +71,33 @@ func WriteFiles(src map[string][]byte) error {
 	return eg.Wait()
 }
 
+// ReadFiles читает файлы в директории с применением опциональным фильтров
+// в таблицу имя файла - содержимое
+func ReadFiles(path string, filter filepaths.FilesFilter) (map[string][]byte, error) {
+	result := make(map[string][]byte)
+
+	filesMap, err := filepaths.MakeFilesMap(path, false, filter)
+	if err != nil {
+		return nil, errors.Wrap(err, "create files map")
+	}
+
+	for name, f := range filesMap {
+		if !f.IsDir() {
+			var content []byte
+
+			if content, err = os.ReadFile(name); err != nil {
+				return nil, errors.Ctx().Str("path", name).Wrap(err, "read file")
+			}
+
+			result[name] = content
+		}
+	}
+
+	return result, nil
+}
+
 // ReadFileTo - читает файл и декодирует его содержимое в переданный объект
-func ReadFileTo(filePath string, result interface{}) (err error) {
+func ReadFileTo(filePath string, result any) (err error) {
 	var (
 		info os.FileInfo
 		fd   *os.File
@@ -108,7 +135,67 @@ func ReadFileTo(filePath string, result interface{}) (err error) {
 			return errors.Wrapf(err, "unmarshal json")
 		}
 	default:
-		return ErrUnsupportedFileFormat
+		decoder := gob.NewDecoder(buf)
+
+		if err = decoder.Decode(&result); err != nil {
+			return errors.Wrapf(err, "decode data from gob format")
+		}
+	}
+
+	return nil
+}
+
+// WriteToFile - записывает содержимое объекта в файл
+func WriteToFile(filePath string, obj any) (err error) {
+	var (
+		fd  *os.File
+		buf = &bytes.Buffer{}
+	)
+
+	defer func() {
+		buf.Reset()
+
+		if err = fd.Close(); err != nil {
+			err = errors.Wrap(err, "close file")
+		}
+	}()
+
+	switch filepath.Ext(filePath) {
+	case ".yaml", ".yml":
+		encoder := yaml.NewEncoder(buf)
+		if err = encoder.Encode(obj); err != nil {
+			return errors.Wrap(err, "encode data to yaml")
+		}
+	case ".json":
+		encoder := json.NewEncoder(buf)
+		encoder.SetIndent("", "  ")
+
+		if err = encoder.Encode(obj); err != nil {
+			return errors.Wrap(err, "encode data to json")
+		}
+	default:
+		encoder := gob.NewEncoder(buf)
+
+		if err = encoder.Encode(obj); err != nil {
+			return errors.Wrap(err, "encode data with gob encoder")
+		}
+	}
+
+	fd, err = os.OpenFile(filepath.Clean(filePath), os.O_CREATE|os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return errors.Wrap(err, "open or create object file")
+	}
+
+	if err = fd.Truncate(0); err != nil {
+		return errors.Wrap(err, "truncate object file")
+	}
+
+	if _, err = fd.Seek(0, 0); err != nil {
+		return errors.Wrap(err, "seek object file")
+	}
+
+	if _, err = io.Copy(fd, buf); err != nil {
+		return errors.Wrap(err, "write data to file")
 	}
 
 	return nil

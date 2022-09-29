@@ -125,7 +125,7 @@ case <-time.After(time.Second):
 }
 buffer.CancelDetects()
 */
-func (b *Buffer) Detect(desired string, args ...interface{}) chan bool {
+func (b *Buffer) Detect(desired string, args ...any) chan bool {
 	formattedRegexp := desired
 	if len(args) > 0 {
 		formattedRegexp = fmt.Sprintf(desired, args...)
