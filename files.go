@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/gob"
 	"encoding/json"
-	"io"
 	"os"
 	"path/filepath"
 
@@ -96,48 +95,29 @@ func ReadFiles(path string, filter filepaths.FilesFilter) (map[string][]byte, er
 	return result, nil
 }
 
-// ReadFileTo - читает файл и декодирует его содержимое в переданный объект
-func ReadFileTo(filePath string, result any) (err error) {
-	var (
-		info os.FileInfo
-		fd   *os.File
-	)
-
-	info, err = os.Stat(filePath)
+// ReadFromFile - читает файл и декодирует его содержимое в переданный объект
+func ReadFromFile(filePath string, obj any) error {
+	data, err := os.ReadFile(filePath)
 	if err != nil {
-		return errors.Wrapf(err, "get file stat")
+		return errors.Wrap(err, "read data from file")
 	}
 
-	fd, err = os.OpenFile(filepath.Clean(filePath), os.O_RDONLY, info.Mode())
-	if err != nil {
-		return errors.Wrapf(err, "open file")
-	}
-
-	defer func() {
-		if err = fd.Close(); err != nil {
-			err = errors.Wrap(err, "close file")
-		}
-	}()
-
-	buf := &bytes.Buffer{}
-
-	if _, err = io.Copy(buf, fd); err != nil {
-		return errors.Wrapf(err, "read file")
-	}
+	buf := bytes.NewBuffer(data)
 
 	switch filepath.Ext(filePath) {
 	case ".yaml", ".yml":
-		if err = yaml.Unmarshal(buf.Bytes(), &result); err != nil {
+		decoder := yaml.NewDecoder(buf)
+		if err = decoder.Decode(&obj); err != nil {
 			return errors.Wrapf(err, "unmarshal yaml")
 		}
 	case ".json":
-		if err = json.Unmarshal(buf.Bytes(), &result); err != nil {
+		decoder := json.NewDecoder(buf)
+		if err = decoder.Decode(&obj); err != nil {
 			return errors.Wrapf(err, "unmarshal json")
 		}
 	default:
 		decoder := gob.NewDecoder(buf)
-
-		if err = decoder.Decode(&result); err != nil {
+		if err = decoder.Decode(&obj); err != nil {
 			return errors.Wrapf(err, "decode data from gob format")
 		}
 	}
@@ -147,54 +127,30 @@ func ReadFileTo(filePath string, result any) (err error) {
 
 // WriteToFile - записывает содержимое объекта в файл
 func WriteToFile(filePath string, obj any) (err error) {
-	var (
-		fd  *os.File
-		buf = &bytes.Buffer{}
-	)
-
-	defer func() {
-		buf.Reset()
-
-		if err = fd.Close(); err != nil {
-			err = errors.Wrap(err, "close file")
-		}
-	}()
+	buf := &bytes.Buffer{}
 
 	switch filepath.Ext(filePath) {
 	case ".yaml", ".yml":
 		encoder := yaml.NewEncoder(buf)
-		if err = encoder.Encode(obj); err != nil {
+		if err = encoder.Encode(&obj); err != nil {
 			return errors.Wrap(err, "encode data to yaml")
 		}
 	case ".json":
 		encoder := json.NewEncoder(buf)
 		encoder.SetIndent("", "  ")
 
-		if err = encoder.Encode(obj); err != nil {
+		if err = encoder.Encode(&obj); err != nil {
 			return errors.Wrap(err, "encode data to json")
 		}
 	default:
 		encoder := gob.NewEncoder(buf)
 
-		if err = encoder.Encode(obj); err != nil {
+		if err = encoder.Encode(&obj); err != nil {
 			return errors.Wrap(err, "encode data with gob encoder")
 		}
 	}
 
-	fd, err = os.OpenFile(filepath.Clean(filePath), os.O_CREATE|os.O_RDWR, os.ModePerm)
-	if err != nil {
-		return errors.Wrap(err, "open or create object file")
-	}
-
-	if err = fd.Truncate(0); err != nil {
-		return errors.Wrap(err, "truncate object file")
-	}
-
-	if _, err = fd.Seek(0, 0); err != nil {
-		return errors.Wrap(err, "seek object file")
-	}
-
-	if _, err = io.Copy(fd, buf); err != nil {
+	if err = os.WriteFile(filePath, buf.Bytes(), os.ModePerm); err != nil {
 		return errors.Wrap(err, "write data to file")
 	}
 
