@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.corout.in/golibs/errors"
+	"git.eth4.dev/golibs/errors"
 
-	"git.corout.in/golibs/filepaths"
+	"git.eth4.dev/golibs/filepaths"
 )
 
 // DirTarGz - упаковывает директорию src в dst/name.tar.gz

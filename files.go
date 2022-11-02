@@ -8,12 +8,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.corout.in/golibs/errors"
-	"git.corout.in/golibs/errors/errgroup"
-	"git.corout.in/golibs/slog"
+	"git.eth4.dev/golibs/errors"
+	"git.eth4.dev/golibs/errors/errgroup"
+	"git.eth4.dev/golibs/slog"
 	"gopkg.in/yaml.v2"
 
-	"git.corout.in/golibs/filepaths"
+	"git.eth4.dev/golibs/filepaths"
 )
 
 // ErrUnsupportedFileFormat - не поддерживаемый формат файла

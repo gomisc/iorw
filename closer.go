@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"git.corout.in/golibs/errors"
-	"git.corout.in/golibs/slog"
+	"git.eth4.dev/golibs/errors"
+	"git.eth4.dev/golibs/slog"
 )
 
 // CloseAll - закрывает переданные дескрипторы c возвратом ошибок

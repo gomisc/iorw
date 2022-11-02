@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.corout.in/golibs/errors"
+	"git.eth4.dev/golibs/errors"
 )
 
 // Copy - рекурсивно копирует объект(ы) по пути файловой системы из источника в приемник
