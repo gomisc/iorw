@@ -3,9 +3,9 @@ module git.eth4.dev/golibs/iorw
 go 1.18
 
 require (
-	git.eth4.dev/golibs/errors v1.2.1
+	git.eth4.dev/golibs/errors v1.2.2
 	git.eth4.dev/golibs/filepaths v1.1.0
-	git.eth4.dev/golibs/slog v1.1.0
+	git.eth4.dev/golibs/slog v1.1.1
 	gopkg.in/yaml.v2 v2.4.0
 )
 
