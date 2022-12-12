@@ -102,22 +102,31 @@ func ReadFromFile(filePath string, obj any) error {
 		return errors.Wrap(err, "read data from file")
 	}
 
+	if err = ReadFromBytes(data, filepath.Ext(filePath), obj); err != nil {
+		return errors.Wrap(err, "parse file bytes")
+	}
+
+	return nil
+}
+
+// ReadFromBytes - читает содержимое бинарного массива в переданный объект
+func ReadFromBytes(data []byte, ext string, obj any) error {
 	buf := bytes.NewBuffer(data)
 
-	switch filepath.Ext(filePath) {
+	switch ext {
 	case ".yaml", ".yml":
 		decoder := yaml.NewDecoder(buf)
-		if err = decoder.Decode(&obj); err != nil {
+		if err := decoder.Decode(&obj); err != nil {
 			return errors.Wrapf(err, "unmarshal yaml")
 		}
 	case ".json":
 		decoder := json.NewDecoder(buf)
-		if err = decoder.Decode(&obj); err != nil {
+		if err := decoder.Decode(&obj); err != nil {
 			return errors.Wrapf(err, "unmarshal json")
 		}
 	default:
 		decoder := gob.NewDecoder(buf)
-		if err = decoder.Decode(&obj); err != nil {
+		if err := decoder.Decode(&obj); err != nil {
 			return errors.Wrapf(err, "decode data from gob format")
 		}
 	}
