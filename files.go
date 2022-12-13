@@ -116,7 +116,7 @@ func ReadFromBytes(data []byte, ext string, obj any) error {
 	switch ext {
 	case ".yaml", ".yml":
 		decoder := yaml.NewDecoder(buf)
-		if err := decoder.Decode(&obj); err != nil {
+		if err := decoder.Decode(obj); err != nil {
 			return errors.Wrapf(err, "unmarshal yaml")
 		}
 	case ".json":
