@@ -8,12 +8,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.eth4.dev/golibs/errors"
-	"git.eth4.dev/golibs/errors/errgroup"
-	"git.eth4.dev/golibs/slog"
+	"gopkg.in/gomisc/errors.v1"
+	"gopkg.in/gomisc/errors.v1/errgroup"
+	"gopkg.in/gomisc/slog.v1"
 	"gopkg.in/yaml.v2"
 
-	"git.eth4.dev/golibs/filepaths"
+	"gopkg.in/gomisc/filepaths.v1"
 )
 
 // ErrUnsupportedFileFormat - не поддерживаемый формат файла

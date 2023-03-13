@@ -7,9 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.eth4.dev/golibs/errors"
+	"gopkg.in/gomisc/errors.v1"
 
-	"git.eth4.dev/golibs/filepaths"
+	"gopkg.in/gomisc/filepaths.v1"
 )
 
 // DirTarGz - упаковывает директорию src в dst/name.tar.gz

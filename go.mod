@@ -1,12 +1,12 @@
-module git.eth4.dev/golibs/iorw
+module gopkg.in/gomisc/iorw.v1
 
-go 1.18
+go 1.19
 
 require (
-	git.eth4.dev/golibs/errors v1.2.3
-	git.eth4.dev/golibs/filepaths v1.1.0
-	git.eth4.dev/golibs/slog v1.1.2
+	gopkg.in/gomisc/errors.v1 v1.3.2
+	gopkg.in/gomisc/filepaths.v1 v1.2.1
+	gopkg.in/gomisc/slog.v1 v1.2.1
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require git.eth4.dev/golibs/fields v1.1.1 // indirect
+require gopkg.in/gomisc/fields.v1 v1.1.2 // indirect

@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.eth4.dev/golibs/errors"
+	"gopkg.in/gomisc/errors.v1"
 )
 
 // Copy - рекурсивно копирует объект(ы) по пути файловой системы из источника в приемник

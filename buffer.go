@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"git.eth4.dev/golibs/errors"
+	"gopkg.in/gomisc/errors.v1"
 )
 
 const (
@@ -117,12 +117,18 @@ Detect - поиск в буфере на совпадение искомого �
 
 select {
 case <-buffer.Detect("You are not logged in"):
+
 	//log in
+
 case <-buffer.Detect("Success"):
+
 	//carry on
+
 case <-time.After(time.Second):
-	//welp
-}
+
+		//welp
+	}
+
 buffer.CancelDetects()
 */
 func (b *Buffer) Detect(desired string, args ...any) chan bool {

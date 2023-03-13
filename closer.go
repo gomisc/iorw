@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"git.eth4.dev/golibs/errors"
-	"git.eth4.dev/golibs/slog"
+	"gopkg.in/gomisc/errors.v1"
+	"gopkg.in/gomisc/slog.v1"
 )
 
 // CloseAll - закрывает переданные дескрипторы c возвратом ошибок
